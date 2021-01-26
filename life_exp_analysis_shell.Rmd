@@ -23,8 +23,12 @@ expectancy for each country in the given year.
 gap <- gapminder_unfiltered
 
 gap %>%
-  group_by(year, country) %>%
-  summarise(maxlife = max(lifeExp, na.rm = TRUE)) -> sumdat
+  group_by(year) %>%
+  filter(lifeExp == max(lifeExp)) %>%
+  ungroup() %>%
+  select(year,country, lifeExp) %>%
+  arrange(year) ->
+  sumdat
 ```
 
 # Abstract
@@ -34,3 +38,14 @@ Here, I re-examine the analysis of Oeppen and Vaupel (2002).
 # Analysis
 
 Very good analysis done here. 
+
+```{r}
+sumdat %>%
+  ggplot() +
+  geom_smooth(aes(x = year, y = lifeExp), method = lm) +
+  geom_point(aes(x = year, y = lifeExp, color = country)) +
+  labs(y = "Maximum Life Expectancy")
+              
+  
+```
+
